@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import { supabase } from '../config/supabase';
 import { AuthRequest } from '../middleware/auth';
-import { AsyncParser } from 'json2csv';
+import { Parser } from 'json2csv';
+
 
 export const getAttendanceReport = async (req: AuthRequest, res: Response) => {
   try {
@@ -34,8 +35,9 @@ export const getAttendanceReport = async (req: AuthRequest, res: Response) => {
         
         if (!report[userId]) {
           report[userId] = {
-            name: user?.full_name,
-            email: user?.email,
+            name: (user as any)?.full_name || (user as any)[0]?.full_name,
+            email: (user as any)?.email || (user as any)[0]?.email,
+
             shifts_assigned: 0,
             late_count: 0,
             completed_shifts: 0
@@ -68,8 +70,9 @@ export const exportCsv = async (req: AuthRequest, res: Response) => {
       json: async (data: any) => {
         const fields = ['name', 'email', 'shifts_assigned', 'completed_shifts', 'late_count'];
         const opts = { fields };
-        const parser = new AsyncParser(opts);
-        const csv = await parser.parse(data).promise();
+        const parser = new Parser(opts);
+        const csv = parser.parse(data);
+
         
         res.header('Content-Type', 'text/csv');
         res.attachment('attendance-report.csv');

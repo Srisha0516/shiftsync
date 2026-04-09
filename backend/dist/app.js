@@ -1,0 +1,36 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
+const helmet_1 = __importDefault(require("helmet"));
+const morgan_1 = __importDefault(require("morgan"));
+const errorHandler_1 = require("./middleware/errorHandler");
+const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
+const availability_routes_1 = __importDefault(require("./routes/availability.routes"));
+const shift_routes_1 = __importDefault(require("./routes/shift.routes"));
+const attendance_routes_1 = __importDefault(require("./routes/attendance.routes"));
+const swap_routes_1 = __importDefault(require("./routes/swap.routes"));
+const leave_routes_1 = __importDefault(require("./routes/leave.routes"));
+const notice_routes_1 = __importDefault(require("./routes/notice.routes"));
+const ai_routes_1 = __importDefault(require("./routes/ai.routes"));
+const report_routes_1 = __importDefault(require("./routes/report.routes"));
+const app = (0, express_1.default)();
+app.use((0, helmet_1.default)());
+app.use((0, cors_1.default)());
+app.use(express_1.default.json());
+app.use((0, morgan_1.default)('dev'));
+// Routes
+app.use('/api/auth', auth_routes_1.default);
+app.use('/api/availability', availability_routes_1.default);
+app.use('/api/shifts', shift_routes_1.default);
+app.use('/api/attendance', attendance_routes_1.default);
+app.use('/api/swaps', swap_routes_1.default);
+app.use('/api/leaves', leave_routes_1.default);
+app.use('/api/notices', notice_routes_1.default);
+app.use('/api/ai', ai_routes_1.default);
+app.use('/api/reports', report_routes_1.default);
+app.use(errorHandler_1.errorHandler);
+exports.default = app;

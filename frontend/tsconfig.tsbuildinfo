@@ -1,1 +1,1 @@
-{"root":["./src/app.tsx","./src/pricingpage.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/ui/pricing-section-4.tsx","./src/lib/utils.ts"],"version":"6.0.2"}
+{"root":["./src/app.tsx","./src/pricingpage.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/ui/pricing-section-4.tsx","./src/context/authcontext.tsx","./src/lib/api.ts","./src/lib/utils.ts","./src/pages/loginpage.tsx","./src/pages/signuppage.tsx"],"version":"6.0.2"}

@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const express_validator_1 = require("express-validator");
+const errorHandler_1 = require("../middleware/errorHandler");
+const auth_1 = require("../middleware/auth");
+const attendance_controller_1 = require("../controllers/attendance.controller");
+const router = (0, express_1.Router)();
+router.use(auth_1.verifyToken);
+router.post('/clock-in', [(0, express_validator_1.body)('shift_assignment_id').notEmpty()], errorHandler_1.validateRequest, attendance_controller_1.clockIn);
+router.post('/clock-out', [(0, express_validator_1.body)('shift_assignment_id').notEmpty()], errorHandler_1.validateRequest, attendance_controller_1.clockOut);
+exports.default = router;
