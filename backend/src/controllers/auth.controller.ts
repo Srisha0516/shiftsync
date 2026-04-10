@@ -26,11 +26,10 @@ export const registerManager = async (req: Request, res: Response) => {
     const userId = uuidv4();
     const businessId = uuidv4();
     
-    // Insert Business
+    // Insert Business (without manager initially to avoid circular FK violation)
     const { error: bizErr } = await supabase.from('businesses').insert({
       id: businessId,
-      name: business_name,
-      manager_id: userId
+      name: business_name
     });
     
     if (bizErr) throw bizErr;
@@ -46,6 +45,14 @@ export const registerManager = async (req: Request, res: Response) => {
     });
 
     if (userErr) throw userErr;
+
+    // Link Manager back to Business
+    const { error: updateErr } = await supabase
+      .from('businesses')
+      .update({ manager_id: userId })
+      .eq('id', businessId);
+    
+    if (updateErr) throw updateErr;
 
     const { accessToken, refreshToken } = generateTokens(userId, 'manager', businessId);
 
