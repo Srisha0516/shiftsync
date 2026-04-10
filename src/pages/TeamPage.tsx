@@ -14,16 +14,8 @@ const TeamPage = () => {
 
   const fetchTeam = async () => {
     try {
-      // In a real app, this would be GET /api/users or /api/team
-      // For now we'll derive from shifts or a mock if empty
-      const res = await api.get('/shifts');
-      const allUsers = res.data.flatMap((s: any) => s.shift_assignments || [])
-        .map((a: any) => a.users)
-        .filter((u: any, i: number, self: any[]) => u && self.findIndex(t => t.id === u.id) === i);
-      
-      setTeam(allUsers.length > 0 ? allUsers : [
-        { full_name: 'System Admin', email: 'admin@shiftsync.pro', role: 'manager' }
-      ]);
+      const res = await api.get('/auth/team');
+      setTeam(res.data);
     } catch (err) {
       console.error(err);
     } finally {

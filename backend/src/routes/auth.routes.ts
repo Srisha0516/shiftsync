@@ -1,13 +1,26 @@
 import { Router } from 'express';
 import { body } from 'express-validator';
 import { validateRequest } from '../middleware/errorHandler';
-import { registerManager, login, inviteEmployee, employeeSignup, refreshTokenEndpoint } from '../controllers/auth.controller';
+import { registerManager, login, inviteEmployee, employeeSignup, refreshTokenEndpoint, getTeam } from '../controllers/auth.controller';
 import { verifyToken, requireManager } from '../middleware/auth';
 
 const router = Router();
 
 router.post(
   '/register',
+  [
+    body('email').isEmail(),
+    body('password').isLength({ min: 6 }),
+    body('full_name').notEmpty(),
+    body('business_name').notEmpty()
+  ],
+  validateRequest,
+  registerManager
+);
+
+// Alias for frontend compatibility
+router.post(
+  '/register-manager',
   [
     body('email').isEmail(),
     body('password').isLength({ min: 6 }),
@@ -46,5 +59,7 @@ router.post(
 );
 
 router.post('/refresh', [body('token').notEmpty()], validateRequest, refreshTokenEndpoint);
+
+router.get('/team', verifyToken, getTeam);
 
 export default router;

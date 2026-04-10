@@ -34,17 +34,12 @@ const SchedulesPage = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [shiftsRes, shiftsAllRes] = await Promise.all([
+      const [shiftsRes, teamRes] = await Promise.all([
         api.get('/shifts'),
-        api.get('/shifts') // Just to reuse, in real apps you'd have getTeam
+        api.get('/auth/team')
       ]);
       setShifts(shiftsRes.data);
-      
-      // Derive team from assignments for now
-      const allUsers = shiftsAllRes.data.flatMap((s: any) => s.shift_assignments || [])
-        .map((a: any) => a.users)
-        .filter((u: any, i: number, self: any[]) => u && self.findIndex(t => t.id === u.id) === i);
-      setTeam(allUsers);
+      setTeam(teamRes.data);
     } catch (err) {
       console.error(err);
     } finally {

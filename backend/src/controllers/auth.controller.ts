@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { AuthRequest } from '../middleware/auth';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
@@ -140,5 +141,22 @@ export const refreshTokenEndpoint = async (req: Request, res: Response) => {
     res.json(payload);
   } catch (err) {
     res.status(403).json({ error: 'Invalid refresh token' });
+  }
+};
+
+export const getTeam = async (req: AuthRequest, res: Response) => {
+  try {
+    const businessId = req.user?.businessId;
+    if (!businessId) return res.status(400).json({ error: 'Business ID required' });
+
+    const { data: users, error } = await supabase
+      .from('users')
+      .select('id, full_name, email, role')
+      .eq('business_id', businessId);
+
+    if (error) throw error;
+    res.json(users);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
   }
 };

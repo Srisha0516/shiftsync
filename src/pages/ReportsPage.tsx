@@ -26,20 +26,21 @@ const ReportsPage = () => {
 
   const fetchStats = async () => {
     try {
-      // In a real app, this would hit /api/reports/summary
-      const res = await api.get('/shifts');
-      // Mock calculation for demonstration
-      const totalHours = res.data.length * 8; // assuming 8h shifts
-      const rate = 20;
+      const res = await api.get('/reports');
+      const data = res.data;
+      
+      // Calculate aggregate stats from the report array
+      const totalHours = data.reduce((acc: number, curr: any) => acc + (curr.completed_shifts * 8), 0);
+      const lateCount = data.reduce((acc: number, curr: any) => acc + curr.late_count, 0);
       
       setStats({
         totalHours,
-        earnings: totalHours * rate,
-        lateCount: 2,
-        attendanceHistory: res.data.slice(0, 5).map((s: any) => ({
-          date: s.shift_date,
-          status: 'Present',
-          hours: 8
+        earnings: totalHours * 20,
+        lateCount,
+        attendanceHistory: data.slice(0, 5).map((u: any) => ({
+          name: u.name,
+          status: 'Record Found',
+          hours: u.completed_shifts * 8
         }))
       });
     } catch (err) {
