@@ -2,11 +2,12 @@ import { Router } from 'express';
 import { body } from 'express-validator';
 import { validateRequest } from '../middleware/errorHandler';
 import { verifyToken } from '../middleware/auth';
-import { clockIn, clockOut } from '../controllers/attendance.controller';
+import { clockIn, clockOut, getAttendanceStatus } from '../controllers/attendance.controller';
 
 const router = Router();
 
 router.use(verifyToken);
+router.get('/status', getAttendanceStatus);
 
 router.post(
   '/clock-in',

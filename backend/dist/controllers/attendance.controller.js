@@ -1,9 +1,26 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clockOut = exports.clockIn = void 0;
+exports.clockOut = exports.clockIn = exports.getAttendanceStatus = void 0;
 const uuid_1 = require("uuid");
 const supabase_1 = require("../config/supabase");
 const server_1 = require("../server");
+const getAttendanceStatus = async (req, res) => {
+    try {
+        const { data: attendance, error } = await supabase_1.supabase
+            .from('attendance')
+            .select('*, shift_assignments(*, shifts(*))')
+            .eq('shift_assignments.user_id', req.user.userId)
+            .is('clock_out', null)
+            .single();
+        if (error && error.code !== 'PGRST116')
+            throw error; // PGRST116 is "No rows found"
+        res.json(attendance || null);
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+exports.getAttendanceStatus = getAttendanceStatus;
 const clockIn = async (req, res) => {
     try {
         const { shift_assignment_id } = req.body;

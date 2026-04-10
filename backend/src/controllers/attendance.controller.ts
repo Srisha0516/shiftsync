@@ -4,6 +4,23 @@ import { supabase } from '../config/supabase';
 import { AuthRequest } from '../middleware/auth';
 import { io } from '../server';
 
+export const getAttendanceStatus = async (req: AuthRequest, res: Response) => {
+  try {
+    const { data: attendance, error } = await supabase
+      .from('attendance')
+      .select('*, shift_assignments(*, shifts(*))')
+      .eq('shift_assignments.user_id', req.user!.userId)
+      .is('clock_out', null)
+      .single();
+
+    if (error && error.code !== 'PGRST116') throw error; // PGRST116 is "No rows found"
+    
+    res.json(attendance || null);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export const clockIn = async (req: AuthRequest, res: Response) => {
   try {
     const { shift_assignment_id } = req.body;

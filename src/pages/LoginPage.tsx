@@ -124,8 +124,8 @@ const LoginPage = () => {
             </p>
           </footer>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 };
 
