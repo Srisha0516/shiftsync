@@ -23,6 +23,7 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(config.port, () => {
-  console.log(`Server running in ${config.nodeEnv} mode on port ${config.port}`);
+server.listen(config.port, '0.0.0.0', () => {
+  console.log(`🚀 [SHIFTSYNC] Server started in ${config.nodeEnv} mode`);
+  console.log(`🚀 [SHIFTSYNC] Listening on 0.0.0.0:${config.port}`);
 });
