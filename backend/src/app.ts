@@ -36,6 +36,7 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 // Routes
+app.get('/api/health', (req, res) => res.status(200).json({ status: 'ok', time: new Date().toISOString() }));
 app.use('/api/auth', authRoutes);
 app.use('/api/availability', availabilityRoutes);
 app.use('/api/shifts', shiftRoutes);
