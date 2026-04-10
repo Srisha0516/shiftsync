@@ -31,6 +31,15 @@ app.use(cors({
 app.use(express.json());
 app.use(morgan('dev'));
 
+// Logger for CORS debugging
+app.use((req, res, next) => {
+  console.log(`[CORS DEBUG] Request from Origin: ${req.headers.origin} | Method: ${req.method} | Path: ${req.path}`);
+  next();
+});
+
+// Explicitly handle preflight for all routes
+app.options('*', cors());
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/availability', availabilityRoutes);
