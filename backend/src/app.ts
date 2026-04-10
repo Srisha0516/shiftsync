@@ -16,17 +16,34 @@ import reportRoutes from './routes/report.routes';
 
 const app = express();
 
-app.use(helmet());
-app.use(cors({
-  origin: [
+// Manual high-priority CORS middleware
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  const allowedOrigins = [
     'https://shiftsync-psi.vercel.app',
     'https://shiftsync-git-main-srisha0516s-projects.vercel.app',
     'https://shiftsync-47pxnn0hg-srisha0516s-projects.vercel.app',
     'http://localhost:5173'
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  ];
+
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  // Handle preflight
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  next();
+});
+
+app.use(helmet({
+  crossOriginResourcePolicy: false,
 }));
 app.use(express.json());
 app.use(morgan('dev'));
